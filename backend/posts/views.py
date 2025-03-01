@@ -2,6 +2,12 @@ from django.http import JsonResponse
 from .models import Post
 
 
+def posts_list_view(request, *args, **kwargs):
+    queryset = Post.objects.all()
+    data = list(queryset.values())
+    return JsonResponse(data, safe=False)
+
+
 def post_details_view(request, id, *args, **kwargs):
     data = {'id': id}
     STATUS = 200
