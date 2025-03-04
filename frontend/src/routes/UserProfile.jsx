@@ -2,6 +2,9 @@ import { Box, Flex, Heading, HStack, Text, VStack, Image, Button } from "@chakra
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 
+import UserService from "../services/UserService";
+import { BASE_URL as SERVER_URL } from "../utils/constants";
+
 export const UserProfile = () => {
 
     const {username} = useParams();
@@ -24,35 +27,51 @@ export const UserProfile = () => {
 
 const UserDetails = ({username}) => {
 
-    const USER_IMAGE_PATH = 'http://localhost:8000/media/profile_image/default.jpg'
+    const [userData, setUserData] = useState({})
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await UserService.getUserProfileData(username)
+                setUserData(response)
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchUserData();
+    }, [])
 
     return (
         <VStack w='100%' alignItems='start' gap='40px'>
             <Heading>@{username}</Heading>
             <HStack gap='20px'>
                 <Box boxSize='150px' border='2px solid' borderColor='gray.300' borderRadius='full' overflow='hidden'>
-                    <Image src='' alt='profile picture' borderRadius='full' boxSize='100%' objectFit='cover'/>
+                    <Image src={`${SERVER_URL}${userData.profile_img}`} alt='profile picture' borderRadius='full' boxSize='100%' objectFit='cover'/>
                 </Box>
                 <VStack gap='20px'>
                     <HStack gap='20px' fontSize='18px'>
-                        <VStack gap='20px'>
+                        {/* <VStack gap='20px'>
                             <Text>Posts</Text>
-                            <Text>0</Text>
-                        </VStack>
+                            <Text>{userData.follower}</Text>
+                        </VStack> */}
                         <VStack gap='20px'>
                             <Text>Followers</Text>
-                            <Text>0</Text>
+                            <Text>{userData.follower_count}</Text>
                         </VStack>
                         <VStack gap='20px'>
                             <Text>Following</Text>
-                            <Text>0</Text>
+                            <Text>{userData.following_count}</Text>
                         </VStack>
                     </HStack>
                     <Button w='100%'>Edit Profile</Button>
                 </VStack>
             </HStack>
 
-            <Text fontSize='18px'>Hi, this is my BIO !!!</Text>
+            <Text fontSize='18px'>{userData.bio}</Text>
         </VStack>
     )
 }
