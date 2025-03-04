@@ -36,7 +36,7 @@ AUTH_USER_MODEL = 'base.CustomUser'
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "base.authentication.CookiesAuthentication",
+        "base.authenticate.CookiesAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",

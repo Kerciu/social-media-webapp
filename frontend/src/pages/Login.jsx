@@ -17,6 +17,7 @@ const Login = () => {
   const handleLogin = async () => {
     const {username, password} = credentails;
     const response = await AuthService.login(username, password);
+    console.log(response);
     if (response.success) {
       nav(`/profile/${username}`)
     } else {

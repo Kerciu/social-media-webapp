@@ -3,14 +3,14 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
-    TokenObtainPairSerializer
+    TokenRefreshView,
 )
 
 from .models import CustomUser
 from .serializers import CustomUserSerializer
 
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         try:
             tokens = super().post(request, *args, **kwargs).data
@@ -37,11 +37,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             )
 
             return res
-        except:
-            return Response({'success': False})
+        except Exception as e:
+            return Response({'success': False, 'error': str(e)})
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
+class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
         try:
             refresh_token = request.COOKIES.get('refresh_token')
@@ -63,8 +63,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             )
 
             return res
-        except:
-            return Response({'success': False})
+        except Exception as e:
+            return Response({'success': False, 'error': str(e)})
 
 
 @api_view(['GET'])
@@ -83,8 +83,8 @@ def get_user_profile_data(request, username):
 
         return Response(serializer.data)
 
-    except:
+    except Exception as e:
         return Response(
-            {'error': 'User while getting user data'},
+            {'error': str(e)},
             status=404
         )
