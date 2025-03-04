@@ -1,15 +1,12 @@
-from django.urls import path, include
+from django.urls import path
 
 from django.conf import settings
 from django.conf.urls.static import static
 
-from posts.views import posts_list_view, post_details_view
-from .views import get_user_profile_data
+from .views import get_user_profile_data, CustomTokenObtainPairView
 
 urlpatterns = [
-    path('api/posts/', posts_list_view),
-    path('api/posts/<int:id>/', post_details_view),
-    path('api/auth/', include('api.urls')),
-
-    path('user-data/<str:username>/', get_user_profile_data)
+    path('user-data/<str:username>/', get_user_profile_data),
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', CustomTokenObtainPairView.as_view(), name='token_refresh'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
