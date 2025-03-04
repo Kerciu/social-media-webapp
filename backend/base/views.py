@@ -10,18 +10,39 @@ from .models import CustomUser
 from .serializers import CustomUserSerializer
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def post(self, request, *args, **kwargs):
+        try:
+            tokens = super().post(request, *args, **kwargs).data
+            access_token = tokens['access']
+            refresh_token = tokens['refresh']
+            res = Response()
 
-        token['email'] = user.email
+            res.data = {'success': True}
+            res.set_cookie(
+                key='access_token',
+                value=access_token,
+                httponly=True,
+                secure=True,
+                samesite='None',
+                path='/',
+            )
+            res.set_cookie(
+                key='refresh_token',
+                value=refresh_token,
+                httponly=True,
+                secure=True,
+                samesite='None',
+                path='/',
+            )
 
-        return token
+            return res
+        except:
+            return Response({'success': False})
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 
 @api_view(['GET'])
