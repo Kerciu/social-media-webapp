@@ -19,13 +19,19 @@ const Register = () => {
   const nav = useNavigate();
 
   const handleRegister = async () => {
-    const response = await AuthService.register(credentails);
-    console.log(response);
-    if (response.success) {
-      nav(`/login/`)
+    if (credentails.password === credentails.confirmPassword) {
+        try {
+            const response = await AuthService.register(credentails);
+            alert('User registered successfully');
+            nav(`/login/`);
+        } catch (error) {
+            alert('Error registering user');
+            console.error(error);
+        }
     } else {
-      alert('Invalid credentials');
+        alert('Passwords do not match');
     }
+
   }
 
   const handleChange = (event) => {
