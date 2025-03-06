@@ -2,6 +2,7 @@ import { Button, Flex, FormControl, FormLabel, Heading, Input, VStack, Text } fr
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AuthService from '../services/AuthService'
+import { useAuth } from '../contexts/AuthContext'
 
 const Login = () => {
 
@@ -13,16 +14,10 @@ const Login = () => {
   );
 
   const nav = useNavigate();
+  const { authLogin } = useAuth();
 
   const handleLogin = async () => {
-    const {username, password} = credentails;
-    const response = await AuthService.login(username, password);
-    console.log(response);
-    if (response.success) {
-      nav(`/profile/${username}`)
-    } else {
-      alert('Invalid credentials');
-    }
+    authLogin(credentails.username, credentails.password);
   }
 
   const handleChange = (event) => {
