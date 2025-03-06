@@ -36,7 +36,7 @@ const Register = () => {
   }
 
   return  (
-    <Flex w='100%' h='calc(100vh - 90px)' justifyContent='center' alignItems='center'>
+    <Flex w='100%' h='calc(100vh + 90px)' justifyContent='center' alignItems='center'>
         <VStack w='90%' maxWidth='400px' alignItems='start' gap='30px'>
             <Heading>Register</Heading>
             <FormControl>
