@@ -1,4 +1,4 @@
-import { Button, Flex, FormControl, FormLabel, Heading, Input, VStack } from '@chakra-ui/react'
+import { Button, Flex, FormControl, FormLabel, Heading, Input, VStack, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AuthService from '../services/AuthService'
@@ -69,7 +69,10 @@ const Register = () => {
                 <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
                 <Input id="confirmPassword" type="password" onChange={handleChange} />
             </FormControl>
-            <Button w='100%' colorScheme='green' onClick={handleRegister}>Register</Button>
+            <VStack w='100%' alignItems='start' gap='10px'>
+                <Button w='100%' colorScheme='green' onClick={handleRegister}>Register</Button>
+                <Text onClick={() => nav('/login/')}>Already have an account? Login</Text>
+            </VStack>
         </VStack>
     </Flex>
   )
