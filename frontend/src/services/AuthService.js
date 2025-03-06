@@ -21,6 +21,11 @@ const AuthService = {
         const response = await API.post('/token/refresh/');
         return response.data;
     },
+
+    auth: async () => {
+        const response = await API.get('/authenticated/');
+        return response.data;
+    }
 }
 
 export default AuthService;
