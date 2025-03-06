@@ -28,6 +28,16 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+    def validate_username(self, value):
+        if CustomUser.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Username already taken.")
+        return value
+
+    def validate_email(self, value):
+        if CustomUser.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Email already in use.")
+        return value
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
 

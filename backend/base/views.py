@@ -3,14 +3,17 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
-    TokenObtainPairSerializer
+    TokenRefreshView
 )
 
 from .models import CustomUser
-from .serializers import CustomUserSerializer
+from .serializers import (
+    CustomUserSerializer,
+    UserRegisterSerializer
+)
 
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         try:
             tokens = super().post(request, *args, **kwargs).data
@@ -37,11 +40,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             )
 
             return res
-        except:
+        except Exception:
             return Response({'success': False})
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
+class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
         try:
             refresh_token = request.COOKIES.get('refresh_token')
@@ -63,9 +66,27 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             )
 
             return res
-        except:
+        except Exception:
             return Response({'success': False})
 
+
+@api_view(['POST'])
+def register_user(request):
+    try:
+        data = request.data
+        serializer = UserRegisterSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+    except Exception as e:
+        return Response(
+            {'error': 'User while registering user: ' + str(e)},
+            status=404
+        )
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -83,8 +104,8 @@ def get_user_profile_data(request, username):
 
         return Response(serializer.data)
 
-    except:
+    except Exception as e:
         return Response(
-            {'error': 'User while getting user data'},
+            {'error': 'User while getting user data: ' + str(e)},
             status=404
         )
