@@ -12,6 +12,11 @@ from .serializers import (
     UserRegisterSerializer
 )
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def authenticated(request):
+    return Response('authenticated')
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
