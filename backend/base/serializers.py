@@ -3,6 +3,32 @@ from rest_framework import serializers
 from .models import CustomUser
 
 
+class UserRegisterSerializer(serializers.ModelSerializer):
+
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'password'
+        ]
+
+    def create(self, credentials):
+        user = CustomUser(
+            username=credentials['username'],
+            email=credentials['email'],
+            first_name=credentials['first_name'],
+            last_name=credentials['last_name']
+        )
+        user.set_password(credentials['password'])
+        user.save()
+        return user
+
+
 class CustomUserSerializer(serializers.ModelSerializer):
 
     follower_count = serializers.SerializerMethodField('get_follower_count')
