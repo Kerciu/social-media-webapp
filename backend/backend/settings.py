@@ -36,7 +36,7 @@ AUTH_USER_MODEL = 'base.CustomUser'
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "base.authentication.CookiesAuthentication",
+        "base.authenticate.CookiesAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -96,7 +96,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'base',
-    'posts',
 ]
 
 MIDDLEWARE = [
