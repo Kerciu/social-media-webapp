@@ -6,6 +6,17 @@ const AuthService = {
         return response.data;
     },
 
+    register: async ({ username, email, firstName, lastName, password }) => {
+        const response = await API.post('/register/', {
+          username,
+          email,
+          first_name: firstName,
+          last_name: lastName,
+          password,
+        });
+        return response.data;
+    },
+
     refreshToken: async () => {
         const response = await API.post('/token/refresh/');
         return response.data;
