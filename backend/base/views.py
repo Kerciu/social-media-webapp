@@ -93,6 +93,7 @@ def register_user(request):
             status=404
         )
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_profile_data(request, username):
@@ -106,6 +107,8 @@ def get_user_profile_data(request, username):
             )
 
         serializer = CustomUserSerializer(user, many=False)
+        is_logged_user = request.user.username == username
+        serializer.data['is_logged_user'] = is_logged_user
 
         return Response(serializer.data)
 
