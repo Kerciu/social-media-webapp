@@ -107,8 +107,9 @@ def get_user_profile_data(request, username):
             )
 
         serializer = CustomUserSerializer(user, many=False)
-        is_logged_user = request.user.username == username
-        serializer.data['is_logged_user'] = is_logged_user
+
+        serializer.data['is_logged_user'] = request.user.username == username
+        serializer.data['is_following'] = request.user in user.followers_list.all()
 
         return Response(serializer.data)
 
