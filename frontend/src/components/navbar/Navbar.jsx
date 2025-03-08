@@ -11,7 +11,7 @@ const Navbar = () => {
     const nav = useNavigate()
 
     const handleNavigate = (path) => {
-        nav(`/${path}`)
+        nav(`/profile/${path}`)
     }
 
     return (

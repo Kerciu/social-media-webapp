@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, HStack, Text, VStack, Image, Button } from "@chakra-ui/react"
+import { Box, Flex, Heading, HStack, Text, VStack, Image, Button, Spacer } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 
@@ -34,6 +34,7 @@ const UserDetails = ({username}) => {
         const fetchUserData = async () => {
             try {
                 const response = await UserService.getUserProfileData(username)
+                console.log(response)
                 setUserData(response)
             } catch (error) {
                 console.log(error)
@@ -67,7 +68,14 @@ const UserDetails = ({username}) => {
                             <Text>{loading ? '-' : userData.following_count}</Text>
                         </VStack>
                     </HStack>
-                    <Button w='100%'>Edit Profile</Button>
+                    {
+                        loading ? <Spacer/> :
+                        userData.is_logged_user
+                        ?
+                        <Button colorScheme="blue" w='100%'>{userData.is_following ? 'Unfollow' : 'Follow'}</Button>
+                        :
+                        <Button w='100%'>Edit Profile</Button>
+                    }
                 </VStack>
             </HStack>
 
