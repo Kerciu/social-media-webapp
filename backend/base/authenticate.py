@@ -13,5 +13,5 @@ class CookiesAuthentication(JWTAuthentication):
             user = self.get_user(validated_token)
             return user, access_token
 
-        except:
+        except Exception:
             return None

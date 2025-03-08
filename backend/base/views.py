@@ -93,6 +93,7 @@ def register_user(request):
             status=404
         )
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_profile_data(request, username):
@@ -107,10 +108,43 @@ def get_user_profile_data(request, username):
 
         serializer = CustomUserSerializer(user, many=False)
 
-        return Response(serializer.data)
+        data = serializer.data
+        data['is_logged_user'] = request.user.username == username
+        data['is_following'] = request.user in user.followers_list.all()
+
+        return Response(data)
 
     except Exception as e:
         return Response(
             {'error': 'User while getting user data: ' + str(e)},
             status=404
         )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def toggle_follow(request):
+    try:
+        username_to_follow = request.data.get('username')
+        if not username_to_follow:
+            return Response({'error': 'Username is required'}, status=400)
+
+        user = request.user
+        try:
+            user_to_follow = CustomUser.objects.get(username=username_to_follow)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'User does not exist'}, status=404)
+
+        if user == user_to_follow:
+            return Response({'error': 'You cannot follow yourself'}, status=400)
+
+        if user in user_to_follow.followers_list.all():
+            user_to_follow.followers_list.remove(user)
+            return Response({'success': 'User unfollowed', 'now_following': False}, status=200)
+        else:
+            user_to_follow.followers_list.add(user)
+            return Response({'success': 'User followed', 'now_following': True}, status=200)
+
+    except KeyError:
+        return Response({'error': 'Invalid request data'}, status=400)
+    except Exception as e:
+        return Response({'error': f'An error occurred: {str(e)}'}, status=500)

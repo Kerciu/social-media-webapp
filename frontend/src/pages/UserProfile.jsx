@@ -1,9 +1,10 @@
-import { Box, Flex, Heading, HStack, Text, VStack, Image, Button } from "@chakra-ui/react"
+import { Box, Flex, Heading, HStack, Text, VStack, Image, Button, Spacer } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 
 import UserService from "../services/UserService";
 import { BASE_URL as SERVER_URL } from "../utils/constants";
+import FollowerService from "../services/FollowerService";
 
 export const UserProfile = () => {
 
@@ -34,6 +35,7 @@ const UserDetails = ({username}) => {
         const fetchUserData = async () => {
             try {
                 const response = await UserService.getUserProfileData(username)
+                console.log(response)
                 setUserData(response)
             } catch (error) {
                 console.log(error)
@@ -44,6 +46,28 @@ const UserDetails = ({username}) => {
 
         fetchUserData();
     }, [])
+
+    const toggleFollow = async () => {
+        try {
+            const response = await FollowerService.toggleFollow(userData.username)
+            if (response.now_following) {
+                setUserData({
+                    ...userData,
+                    follower_count: userData.follower_count + 1,
+                    is_following: true
+                })
+            } else {
+                setUserData({
+                    ...userData,
+                    follower_count: Math.max(userData.follower_count - 1, 0),
+                    is_following: false
+                })
+            }
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <VStack w='100%' alignItems='start' gap='40px'>
@@ -67,7 +91,16 @@ const UserDetails = ({username}) => {
                             <Text>{loading ? '-' : userData.following_count}</Text>
                         </VStack>
                     </HStack>
-                    <Button w='100%'>Edit Profile</Button>
+                    {
+                        loading ? <Spacer/> :
+                        !userData.is_logged_user
+                        ?
+                        <Button colorScheme="blue" w='100%' onClick={toggleFollow}>
+                            {userData.is_following ? 'Unfollow' : 'Follow'}
+                        </Button>
+                        :
+                        <Button w='100%'>Edit Profile</Button>
+                    }
                 </VStack>
             </HStack>
 
