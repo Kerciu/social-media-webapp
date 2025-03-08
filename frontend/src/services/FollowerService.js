@@ -1,8 +1,10 @@
 import API from "../api/api"
 
 const FollowerService = {
-    toggleFollow: async () => {
-        const response = await API.post('/toggle-follow/');
+    toggleFollow: async (username) => {
+        const response = await API.post('/toggle-follow/', {username});
         return response.data;
     }
 }
+
+export default FollowerService;

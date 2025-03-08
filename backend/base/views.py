@@ -137,12 +137,12 @@ def toggle_follow(request):
         if user == user_to_follow:
             return Response({'error': 'You cannot follow yourself'}, status=400)
 
-        if user_to_follow.followers_list.filter(id=user.id).exists():
+        if user in user_to_follow.followers_list.all():
             user_to_follow.followers_list.remove(user)
-            return Response({'success': 'User unfollowed'}, status=200)
+            return Response({'success': 'User unfollowed', 'now_following': False}, status=200)
         else:
             user_to_follow.followers_list.add(user)
-            return Response({'success': 'User followed'}, status=200)
+            return Response({'success': 'User followed', 'now_following': True}, status=200)
 
     except KeyError:
         return Response({'error': 'Invalid request data'}, status=400)
