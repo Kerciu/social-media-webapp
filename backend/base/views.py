@@ -119,3 +119,32 @@ def get_user_profile_data(request, username):
             {'error': 'User while getting user data: ' + str(e)},
             status=404
         )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def toggle_follow(request):
+    try:
+        username_to_follow = request.data.get('username')
+        if not username_to_follow:
+            return Response({'error': 'Username is required'}, status=400)
+
+        user = request.user
+        try:
+            user_to_follow = CustomUser.objects.get(username=username_to_follow)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'User does not exist'}, status=404)
+
+        if user == user_to_follow:
+            return Response({'error': 'You cannot follow yourself'}, status=400)
+
+        if user_to_follow.followers_list.filter(id=user.id).exists():
+            user_to_follow.followers_list.remove(user)
+            return Response({'success': 'User unfollowed'}, status=200)
+        else:
+            user_to_follow.followers_list.add(user)
+            return Response({'success': 'User followed'}, status=200)
+
+    except KeyError:
+        return Response({'error': 'Invalid request data'}, status=400)
+    except Exception as e:
+        return Response({'error': f'An error occurred: {str(e)}'}, status=500)
