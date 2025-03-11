@@ -65,13 +65,14 @@ class PostSerializer(serializers.ModelSerializer):
 
     username = serializers.SerializerMethodField('get_username')
     like_count = serializers.SerializerMethodField('get_like_count')
+    formatted_date = serializers.SerializerMethodField('get_formatted_date')
 
     class Meta:
         model = Post
         fields = [
             'username',
             'description',
-            'created_at',
+            'formatted_date',
             'likes',
             'like_count'
         ]
@@ -81,3 +82,6 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_like_count(self, obj):
         return obj.likes.count()
+
+    def get_formatted_date(self, obj):
+        return obj.created_at.strftime('%b %d, %Y')
