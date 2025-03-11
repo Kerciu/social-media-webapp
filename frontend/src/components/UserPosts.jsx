@@ -26,13 +26,11 @@ const UserPosts = ({ username }) => {
     }, [])
 
     return (
-        <Flex>
+        <Flex w='100%' wrap='wrap' gap='20px' pb='40px'>
             {
                 loading ? <Text>Loading...</Text> :
                 posts.map(post => (
-                    <Box key={post.id} w='100%' mt='40px'>
-                        <Post post={post}/>
-                    </Box>
+                    <Post post={post}/>
                 ))
             }
         </Flex>
