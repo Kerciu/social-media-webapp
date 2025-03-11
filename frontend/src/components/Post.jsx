@@ -1,4 +1,5 @@
-import { VStack, Text, HStack, Flex, Button } from '@chakra-ui/react'
+import { VStack, Text, HStack, Flex, Box } from '@chakra-ui/react'
+import { AiOutlineLike } from "react-icons/ai";
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -18,7 +19,7 @@ const Post = (props) => {
             <Flex flex='2' w='100%' justifyContent='center' alignItems='center' borderTop='1px solid' bg='gray.50' borderColor='gray.400' borderRadius='0 0 8px 8px'>
                 <HStack w='90%' justifyContent='space-between'>
                     <HStack>
-                        <Button>Like</Button>
+                        <Box cursor='pointer'><AiOutlineLike/></Box>
                         <Text>{like_count}</Text>
                     </HStack>
                     <HStack><Text>{formatted_date}</Text></HStack>
