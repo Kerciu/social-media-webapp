@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import PostService from '../services/PostService'
 import { Flex, Box, Text } from '@chakra-ui/react'
 
+import Post from './Post'
+
 const UserPosts = ({ username }) => {
 
     const [posts, setPosts] = useState([])
@@ -29,7 +31,7 @@ const UserPosts = ({ username }) => {
                 loading ? <Text>Loading...</Text> :
                 posts.map(post => (
                     <Box key={post.id} w='100%' mt='40px'>
-                        <div>{post.description}</div>
+                        <Post post={post}/>
                     </Box>
                 ))
             }
