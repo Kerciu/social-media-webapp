@@ -3,7 +3,7 @@ import { FaUserCircle } from "react-icons/fa";
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { APP_NAME } from '../../utils/constants';
+import { APP_NAME } from '../utils/constants';
 
 const Navbar = () => {
 

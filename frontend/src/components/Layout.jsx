@@ -1,7 +1,7 @@
 import { Flex, VStack, Box } from '@chakra-ui/react'
 import React from 'react'
 
-import Navbar from '../navbar/Navbar'
+import Navbar from './Navbar'
 
 const Layout = ({ children }) => {
   return (

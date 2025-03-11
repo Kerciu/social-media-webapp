@@ -9,7 +9,8 @@ from rest_framework_simplejwt.views import (
 from .models import CustomUser
 from .serializers import (
     CustomUserSerializer,
-    UserRegisterSerializer
+    UserRegisterSerializer,
+    PostSerializer
 )
 
 @api_view(['GET'])
@@ -148,3 +149,27 @@ def toggle_follow(request):
         return Response({'error': 'Invalid request data'}, status=400)
     except Exception as e:
         return Response({'error': f'An error occurred: {str(e)}'}, status=500)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_posts(request, username):
+    try:
+        try:
+            user = CustomUser.objects.get(username=username)
+        except CustomUser.DoesNotExist:
+            return Response(
+                {'error': 'User does not exist'},
+                status=404
+            )
+
+        posts = user.posts.all().order_by('-created_at')
+        serializer = PostSerializer(posts, many=True)
+
+        return Response(serializer.data)
+
+    except Exception as e:
+        return Response(
+            {'error': 'User while getting user posts: ' + str(e)},
+            status=404
+        )
