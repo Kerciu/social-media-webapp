@@ -4,6 +4,11 @@ const PostService = {
     getPosts: async (username) => {
         const response = await API.get(`/user-posts/${username}/`);
         return response.data;
+    },
+
+    likePost: async (id) => {
+        const response = await API.post(`/like-post/`, { id });
+        return response.data;
     }
 }
 

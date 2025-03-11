@@ -1,12 +1,28 @@
 import { VStack, Text, HStack, Flex, Box } from '@chakra-ui/react'
-import { AiOutlineLike } from "react-icons/ai";
-import React from 'react'
+import { AiOutlineLike, AiFillLike } from "react-icons/ai";
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
+import PostService from '../services/PostService';
 
 const Post = (props) => {
 
-    const { username, description, formatted_date, like_count } = props.post
+    const { id, username, description, formatted_date, liked, like_count } = props.post
+
+    const [like, setLike] = useState(liked)
+    const [likeCount, setLikeCount] = useState(like_count)
     const nav = useNavigate();
+
+    const handleToggleLike = async () => {
+        const data = await PostService.likePost(id);
+        if (data.liked) {
+            setLike(true);
+            setLikeCount(likeCount + 1);
+        } else {
+            setLike(false);
+            setLikeCount(Math.max(likeCount - 1, 0));
+        }
+    }
 
     return (
         <VStack w='400px' h='400px' border='1px solid black' borderColor='gray.300' borderRadius='8px'>
@@ -19,8 +35,10 @@ const Post = (props) => {
             <Flex flex='2' w='100%' justifyContent='center' alignItems='center' borderTop='1px solid' bg='gray.50' borderColor='gray.400' borderRadius='0 0 8px 8px'>
                 <HStack w='90%' justifyContent='space-between'>
                     <HStack>
-                        <Box cursor='pointer'><AiOutlineLike/></Box>
-                        <Text>{like_count}</Text>
+                        <Box cursor='pointer'>
+                            {like ? <AiFillLike onClick={handleToggleLike}/> : <AiOutlineLike onClick={handleToggleLike}/>}
+                        </Box>
+                        <Text>{likeCount}</Text>
                     </HStack>
                     <HStack><Text>{formatted_date}</Text></HStack>
                 </HStack>

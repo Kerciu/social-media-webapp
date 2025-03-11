@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 
-from .models import CustomUser
+from .models import CustomUser, Post
 from .serializers import (
     CustomUserSerializer,
     UserRegisterSerializer,
@@ -157,6 +157,8 @@ def get_user_posts(request, username):
     try:
         try:
             user = CustomUser.objects.get(username=username)
+            logged_user = CustomUser.objects.get(username=request.user.username)
+
         except CustomUser.DoesNotExist:
             return Response(
                 {'error': 'User does not exist'},
@@ -166,10 +168,43 @@ def get_user_posts(request, username):
         posts = user.posts.all().order_by('-created_at')
         serializer = PostSerializer(posts, many=True)
 
-        return Response(serializer.data)
+        data = [
+            {**post, 'liked': logged_user.username in post['likes']}
+            for post in serializer.data
+        ]
+
+        return Response(data)
 
     except Exception as e:
         return Response(
             {'error': 'User while getting user posts: ' + str(e)},
+            status=404
+        )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def toggle_like(request):
+    try:
+        try:
+            post = Post.objects.get(id=request.data.get('id'))
+            user = request.user
+
+        except Post.DoesNotExist:
+            return Response(
+                {'error': 'Post does not exist'},
+                status=404
+            )
+
+        if user in post.likes.all():
+            post.likes.remove(user)
+            return Response({'liked': False}, status=200)
+
+        post.likes.add(user)
+        return Response({'liked': True}, status=200)
+
+    except Exception as e:
+        return Response(
+            {'error': 'Failed to like the post: ' + str(e)},
             status=404
         )
