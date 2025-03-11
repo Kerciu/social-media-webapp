@@ -10,8 +10,8 @@ const Post = (props) => {
             <HStack w='100%' flex='1'>
                 <Text>{username}</Text>
             </HStack>
-            <Flex flex='6'>
-                <Text>{description}</Text>
+            <Flex flex='6' w='100%' h='100%' justifyContent='center' alignItems='center'>
+                <Text textAlign='center'>{description}</Text>
             </Flex>
             <Flex flex='2'>
                 <HStack>
