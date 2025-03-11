@@ -8,6 +8,7 @@ from .views import (
     register_user,
     authenticated,
     toggle_follow,
+    get_user_posts,
     CustomTokenObtainPairView,
     CustomTokenRefreshView
 )
@@ -19,4 +20,5 @@ urlpatterns = [
     path('register/', register_user),
     path('authenticated/', authenticated),
     path('toggle-follow/', toggle_follow),
+    path('user-posts/<str:username>/', get_user_posts),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
