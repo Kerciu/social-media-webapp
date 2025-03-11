@@ -1,4 +1,4 @@
-import { VStack, Text } from '@chakra-ui/react'
+import { VStack, Text, HStack, Flex, Button } from '@chakra-ui/react'
 import React from 'react'
 
 const Post = (props) => {
@@ -6,11 +6,22 @@ const Post = (props) => {
     const { username, description, formatted_date, like_count } = props.post
 
     return (
-        <VStack>
-            <Text>{username}</Text>
-            <Text>{description}</Text>
-            <Text>{formatted_date}</Text>
-            <Text>{like_count}</Text>
+        <VStack w='400px' h='400px' border='1px solid black' p='20px' borderColor='gray.300' borderRadius='md'>
+            <HStack w='100%' flex='1'>
+                <Text>{username}</Text>
+            </HStack>
+            <Flex flex='6'>
+                <Text>{description}</Text>
+            </Flex>
+            <Flex flex='2'>
+                <HStack>
+                    <HStack>
+                        <Button>Like</Button>
+                        <Text>{like_count}</Text>
+                    </HStack>
+                    <HStack><Text>{formatted_date}</Text></HStack>
+                </HStack>
+            </Flex>
         </VStack>
     )
 }
