@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import CustomUser
+from .models import CustomUser, Post
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -59,3 +59,25 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     def get_following_count(self, obj):
         return obj.following.count()
+
+
+class PostSerializer(serializers.ModelSerializer):
+
+    username = serializers.SerializerMethodField('get_username')
+    like_count = serializers.SerializerMethodField('get_like_count')
+
+    class Meta:
+        model = Post
+        fields = [
+            'username',
+            'description',
+            'created_at',
+            'likes',
+            'like_count'
+        ]
+
+    def get_username(self, obj):
+        return obj.user.username
+
+    def get_like_count(self, obj):
+        return obj.likes.count()
