@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 
 import UserDetails from "../components/UserDetails";
+import UserPosts from "../components/UserPosts";
 
 export const UserProfile = () => {
 
@@ -18,6 +19,9 @@ export const UserProfile = () => {
             <VStack w='75%' >
                 <Box w='100%' mt='40px'>
                     <UserDetails username={user}/>
+                </Box>
+                <Box w='100%' mt='40px'>
+                    <UserPosts username={user}/>
                 </Box>
             </VStack>
         </Flex>
