@@ -169,7 +169,7 @@ def get_user_posts(request, username):
         serializer = PostSerializer(posts, many=True)
 
         data = [
-            {**post, 'liked': logged_user in post['likes']}
+            {**post, 'liked': logged_user.username in post['likes']}
             for post in serializer.data
         ]
 
