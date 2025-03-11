@@ -157,6 +157,8 @@ def get_user_posts(request, username):
     try:
         try:
             user = CustomUser.objects.get(username=username)
+            logged_user = CustomUser.objects.get(username=request.user.username)
+
         except CustomUser.DoesNotExist:
             return Response(
                 {'error': 'User does not exist'},
@@ -166,7 +168,12 @@ def get_user_posts(request, username):
         posts = user.posts.all().order_by('-created_at')
         serializer = PostSerializer(posts, many=True)
 
-        return Response(serializer.data)
+        data = [
+            {**post, 'liked': logged_user in post['likes']}
+            for post in serializer.data
+        ]
+
+        return Response(data)
 
     except Exception as e:
         return Response(
