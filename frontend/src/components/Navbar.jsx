@@ -1,5 +1,6 @@
 import { Flex, HStack, Text } from '@chakra-ui/react'
 import { FaUserCircle } from "react-icons/fa";
+import { CiSquarePlus } from "react-icons/ci"
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -18,7 +19,10 @@ const Navbar = () => {
         <Flex w='100vw' h='90px' bg='blue.500' justifyContent='center' alignItems='center'>
             <HStack justifyContent='space-between' w='90%' color='white' fontSize={24} fontWeight='bold'>
                 <Text>{APP_NAME}</Text>
-                <HStack>
+                <HStack gap='40px'>
+                    <Text onClick={() => nav('/create-post')}>
+                        <CiSquarePlus size='30px'/>
+                    </Text>
                     <Text onClick={() => handleNavigate(user)}>
                         <FaUserCircle size='40px'/>
                     </Text>
