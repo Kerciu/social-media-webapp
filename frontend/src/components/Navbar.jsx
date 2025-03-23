@@ -18,12 +18,12 @@ const Navbar = () => {
     return (
         <Flex w='100vw' h='90px' bg='blue.500' justifyContent='center' alignItems='center'>
             <HStack justifyContent='space-between' w='90%' color='white' fontSize={24} fontWeight='bold'>
-                <Text>{APP_NAME}</Text>
+                <Text onClick={() => nav('/')} cursor='pointer'>{APP_NAME}</Text>
                 <HStack gap='40px'>
-                    <Text onClick={() => nav('/create-post')}>
+                    <Text onClick={() => nav('/create-post')} cursor='pointer'>
                         <CiSquarePlus size='30px'/>
                     </Text>
-                    <Text onClick={() => handleNavigate(user)}>
+                    <Text onClick={() => handleNavigate(user)} cursor='pointer'>
                         <FaUserCircle size='40px'/>
                     </Text>
                 </HStack>
