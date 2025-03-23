@@ -2,6 +2,7 @@ import { Flex, Heading, Text, VStack, Spinner } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import PostService from '../services/PostService';
 import Post from '../components/Post';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
 
@@ -13,6 +14,7 @@ const Home = () => {
     const [isFetchingMore, setFetchingMore] = useState(false);
     const loadingRef = useRef(null)
 
+    const navigate = useNavigate()
 
     const fetchPosts = useCallback(async (page) => {
         try {
@@ -20,16 +22,26 @@ const Home = () => {
             const response = await PostService.getHomepagePosts(page);
             console.log(response)
 
+            if (response.status === 401) {
+                navigate('/login');
+                return;
+            }
+
             setPosts((prevPosts) => [...prevPosts, ...(response.results || [])])
             setNextPage(page + 1)
         } catch (error) {
+            if (error.response?.status === 401) {
+                navigate('/login');
+                return;
+            }
+
             setErrorMessage(error.response || "An error occured")
-            if (error.status)
+
         } finally {
             setFetchingMore(false)
             setLoading(false)
         }
-    }, [])
+    }, [navigate])
 
     useEffect(() => {
         fetchPosts(1);
