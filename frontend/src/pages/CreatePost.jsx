@@ -30,7 +30,7 @@ const CreatePost = () => {
                     <FormLabel>Description</FormLabel>
                     <Input bg='white' type='text' value={postDesc} onChange={handleDescription}/>
                 </FormControl>
-                <Button w='100%' colorScheme='blue' onSubmit={handleSubmit}>Submit</Button>
+                <Button w='100%' colorScheme='blue' onClick={handleSubmit}>Submit</Button>
             </VStack>
         </Flex>
     )
