@@ -16,8 +16,8 @@ const PostService = {
         return response.data;
     },
 
-    getHomepagePosts: async () => {
-        const response = await API.get(`/posts/`);
+    getHomepagePosts: async (pageNum) => {
+        const response = await API.get(`/posts/?page=${pageNum}`);
         return response.data;
     }
 }
