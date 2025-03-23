@@ -5,56 +5,56 @@ import Post from '../components/Post';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-
     const [posts, setPosts] = useState([])
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
     const [nextPage, setNextPage] = useState(1)
-
     const [isFetchingMore, setFetchingMore] = useState(false);
     const loadingRef = useRef(null)
-
     const navigate = useNavigate()
 
     const fetchPosts = useCallback(async (page) => {
         try {
-            setFetchingMore(true)
+            setFetchingMore(true);
             const response = await PostService.getHomepagePosts(page);
-            console.log(response)
 
-            if (response.status === 401) {
-                navigate('/login');
-                return;
+            if (!response.results) return;
+
+            console.log(response.results)
+            setPosts((prevPosts) => {
+                const newPosts = response.results || [];
+                const uniquePosts = [...prevPosts, ...newPosts].filter(
+                    (post, index, self) => self.findIndex(p => p.id === post.id) === index
+                );
+
+                return uniquePosts;
+            });
+
+            if (response.next) {
+                setNextPage(page + 1);
             }
-
-            setPosts((prevPosts) => [...prevPosts, ...(response.results || [])])
-            setNextPage(page + 1)
         } catch (error) {
             if (error.response?.status === 401) {
                 navigate('/login');
                 return;
             }
-
-            setErrorMessage(error.response || "An error occured")
-
+            setErrorMessage(error.response?.data?.message || "An error occurred");
         } finally {
-            setFetchingMore(false)
-            setLoading(false)
+            setFetchingMore(false);
+            setLoading(false);
         }
-    }, [navigate])
+    }, [navigate]);
 
     useEffect(() => {
         fetchPosts(1);
-    }, [fetchPosts])
+    }, []);
 
     useEffect(() => {
-
         if (!loadingRef.current) return;
 
         const observer = new IntersectionObserver(
             (entries) => {
-                if (entries[0].isIntersecting && !isFetchingMore)
-                {
+                if (entries[0].isIntersecting && !isFetchingMore) {
                     fetchPosts(nextPage);
                 }
             },
@@ -65,33 +65,29 @@ const Home = () => {
 
         return () => {
             if (loadingRef.current) observer.unobserve(loadingRef.current);
-        }
-
-    }, [nextPage, isFetchingMore, fetchPosts])
+        };
+    }, [nextPage, isFetchingMore, fetchPosts]);
 
     return (
-        <Flex w='100%' h='100%' justifyContent='center' pt='50px'>
-            <VStack alignItems='start' pb='50px' gap='30px'>
+        <Flex w="100%" h="100%" justifyContent="center" pt="50px">
+            <VStack alignItems="start" pb="50px" gap="30px">
                 <Heading>Home</Heading>
-                {errorMessage && <Text color='red.400'>Error: {errorMessage}</Text>}
+                {errorMessage && <Text color="red.400">Error: {errorMessage}</Text>}
                 {
-                    loading
-                    ?
-                    <Text>Loading...</Text>
-                    :
-                    posts ?
-                        posts.map((post) => (
-                            <Post key={post.id} post={post}/>
-                        ))
-                    :
-                    <Text>No posts to display...</Text>
+                    loading ? (
+                        <Text>Loading...</Text>
+                    ) : posts.length > 0 ? (
+                        posts.map((post) => <Post key={post.id} post={post} />)
+                    ) : (
+                        <Text>No posts to display...</Text>
+                    )
                 }
 
                 <div ref={loadingRef} style={{ height: '50px' }} />
                 {isFetchingMore && <Spinner size="xl" />}
             </VStack>
         </Flex>
-    )
+    );
 }
 
-export default Home
+export default Home;
