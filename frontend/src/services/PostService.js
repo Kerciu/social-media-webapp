@@ -14,6 +14,11 @@ const PostService = {
     createPost: async (description) => {
         const response = await API.post(`/create-post/`, { description });
         return response.data;
+    },
+
+    getHomepagePosts: async () => {
+        const response = await API.get(`/posts/`);
+        return response.data;
     }
 }
 
