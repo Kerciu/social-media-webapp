@@ -14,31 +14,54 @@ const Home = () => {
     const loadingRef = useRef(null)
 
 
-    const fetchPosts = useCallback(async () => {
+    const fetchPosts = useCallback(async (page) => {
         try {
             setFetchingMore(true)
-            const response = await PostService.getHomepagePosts(nextPage);
+            const response = await PostService.getHomepagePosts(page);
             console.log(response)
 
             setPosts((prevPosts) => [...prevPosts, ...(response.results || [])])
-            setNextPage((prevPage) => prevPage + 1)
+            setNextPage(page + 1)
         } catch (error) {
             setErrorMessage(error.response || "An error occured")
+            if (error.status)
         } finally {
             setFetchingMore(false)
             setLoading(false)
         }
-    }, [nextPage])
+    }, [])
 
     useEffect(() => {
-        fetchPosts();
-    }, [])
+        fetchPosts(1);
+    }, [fetchPosts])
+
+    useEffect(() => {
+
+        if (!loadingRef.current) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !isFetchingMore)
+                {
+                    fetchPosts(nextPage);
+                }
+            },
+            { threshold: 1.0 }
+        );
+
+        observer.observe(loadingRef.current);
+
+        return () => {
+            if (loadingRef.current) observer.unobserve(loadingRef.current);
+        }
+
+    }, [nextPage, isFetchingMore, fetchPosts])
 
     return (
         <Flex w='100%' h='100%' justifyContent='center' pt='50px'>
             <VStack alignItems='start' pb='50px' gap='30px'>
                 <Heading>Home</Heading>
-                {errorMessage && <Text>Error: {errorMessage}</Text>}
+                {errorMessage && <Text color='red.400'>Error: {errorMessage}</Text>}
                 {
                     loading
                     ?
