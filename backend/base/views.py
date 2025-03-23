@@ -6,6 +6,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 
+from rest_framework.pagination import PageNumberPagination
+
 from .models import CustomUser, Post
 from .serializers import (
     CustomUserSerializer,
@@ -253,14 +255,20 @@ def get_all_posts(request):
             )
 
         posts = Post.objects.all().order_by('-created_at')
-        serializer = PostSerializer(posts, many=True)
+
+        PAGE_SIZE = 10
+        paginator = PageNumberPagination()
+        paginator.page_size = PAGE_SIZE
+
+        posts_paginated = paginator.paginate_queryset(posts, request)
+        serializer = PostSerializer(posts_paginated, many=True)
 
         data = [
             {**post, 'liked': logged_user.username in post['likes']}
             for post in serializer.data
         ]
 
-        return Response(data)
+        return paginator.get_paginated_response(data)
 
     except Exception as e:
         return Response(
