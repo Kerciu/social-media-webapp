@@ -237,3 +237,33 @@ def create_post(request):
             {'error': 'Failed to create the post: ' + str(e)},
             status=404
         )
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_posts(request):
+    try:
+        try:
+            logged_user = CustomUser.objects.get(username=request.user.username)
+
+        except CustomUser.DoesNotExist:
+            return Response(
+                {'error': 'User does not exist'},
+                status=404
+            )
+
+        posts = Post.objects.all().order_by('-created_at')
+        serializer = PostSerializer(posts, many=True)
+
+        data = [
+            {**post, 'liked': logged_user.username in post['likes']}
+            for post in serializer.data
+        ]
+
+        return Response(data)
+
+    except Exception as e:
+        return Response(
+            {'error': 'Failed to fetch all the posts: ' + str(e)},
+            status=404
+        )
