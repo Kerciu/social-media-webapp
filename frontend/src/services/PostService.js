@@ -9,6 +9,11 @@ const PostService = {
     likePost: async (id) => {
         const response = await API.post(`/like-post/`, { id });
         return response.data;
+    },
+
+    createPost: async (description) => {
+        const response = await API.post(`/create-post/`, { description });
+        return response.data;
     }
 }
 

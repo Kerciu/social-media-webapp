@@ -10,6 +10,7 @@ from .views import (
     toggle_follow,
     get_user_posts,
     toggle_like,
+    create_post,
     CustomTokenObtainPairView,
     CustomTokenRefreshView
 )
@@ -22,5 +23,6 @@ urlpatterns = [
     path('authenticated/', authenticated),
     path('toggle-follow/', toggle_follow),
     path('user-posts/<str:username>/', get_user_posts),
-    path('like-post/', toggle_like)
+    path('like-post/', toggle_like),
+    path('create-post/', create_post)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
